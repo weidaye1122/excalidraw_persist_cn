@@ -1,0 +1,10 @@
+packages:
+  - "excalidraw-app"
+  - "packages/excalidraw"
+  - "packages/utils"
+  - "packages/math"
+  - "examples/*"
+allowBuilds:
+  core-js: true
+  esbuild: true
+  protobufjs: true

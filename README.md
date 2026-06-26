@@ -1,127 +1,150 @@
-<a href="https://excalidraw.com/" target="_blank" rel="noopener">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" alt="Excalidraw" srcset="https://excalidraw.nyc3.cdn.digitaloceanspaces.com/github/excalidraw_github_cover_2_dark.png" />
-    <img alt="Excalidraw" src="https://excalidraw.nyc3.cdn.digitaloceanspaces.com/github/excalidraw_github_cover_2.png" />
-  </picture>
-</a>
+# Excalidraw Self-Hosted Persistence
 
-<h4 align="center">
-  <a href="https://excalidraw.com">Excalidraw Editor</a> |
-  <a href="https://plus.excalidraw.com/blog">Blog</a> |
-  <a href="https://docs.excalidraw.com">Documentation</a> |
-  <a href="https://plus.excalidraw.com">Excalidraw+</a>
-</h4>
+This project is a self-hosted fork rebuilt on top of the latest stable official `excalidraw/excalidraw` release, `v0.18.1`.
 
-<div align="center">
-  <h2>
-    An open source virtual hand-drawn style whiteboard. </br>
-    Collaborative and end-to-end encrypted. </br>
-  <br />
-  </h2>
-</div>
+It keeps the current official Excalidraw editor UI and drawing capabilities, while replacing the cloud wrapper with a private deployment flow:
 
-<br />
-<p align="center">
-  <a href="https://github.com/excalidraw/excalidraw/blob/master/LICENSE">
-    <img alt="Excalidraw is released under the MIT license." src="https://img.shields.io/badge/license-MIT-blue.svg"  />
-  </a>
-  <a href="https://www.npmjs.com/package/@excalidraw/excalidraw">
-    <img alt="npm downloads/month" src="https://img.shields.io/npm/dm/@excalidraw/excalidraw"  />
-  </a>
-  <a href="https://docs.excalidraw.com/docs/introduction/contributing">
-    <img alt="PRs welcome!" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat"  />
-  </a>
-  <a href="https://discord.gg/UexuTaE">
-    <img alt="Chat on Discord" src="https://img.shields.io/discord/723672430744174682?color=738ad6&label=Chat%20on%20Discord&logo=discord&logoColor=ffffff&widge=false"/>
-  </a>
-  <a href="https://twitter.com/excalidraw">
-    <img alt="Follow Excalidraw on Twitter" src="https://img.shields.io/twitter/follow/excalidraw.svg?label=follow+@excalidraw&style=social&logo=twitter"/>
-  </a>
-</p>
+- password login
+- multiple boards
+- manual save to SQLite
+- local SQLite file path via `DB_PATH`
+- no Excalidraw cloud services
+- no third-party cloud persistence
+- no board uploads to external servers
 
-<div align="center">
-  <figure>
-    <a href="https://excalidraw.com" target="_blank" rel="noopener">
-      <img src="https://excalidraw.nyc3.cdn.digitaloceanspaces.com/github%2Fproduct_showcase.png" alt="Product showcase" />
-    </a>
-    <figcaption>
-      <p align="center">
-        Create beautiful hand-drawn like diagrams, wireframes, or whatever you like.
-      </p>
-    </figcaption>
-  </figure>
-</div>
+## What Changed
 
-## Features
+The editor itself still comes from the official Excalidraw source in this repository.
 
-The Excalidraw editor (npm package) supports:
+The self-hosted layer adds:
 
-- 💯&nbsp;Free & open-source.
-- 🎨&nbsp;Infinite, canvas-based whiteboard.
-- ✍️&nbsp;Hand-drawn like style.
-- 🌓&nbsp;Dark mode.
-- 🏗️&nbsp;Customizable.
-- 📷&nbsp;Image support.
-- 😀&nbsp;Shape libraries support.
-- 👅&nbsp;Localization (i18n) support.
-- 🖼️&nbsp;Export to PNG, SVG & clipboard.
-- 💾&nbsp;Open format - export drawings as an `.excalidraw` json file.
-- ⚒️&nbsp;Wide range of tools - rectangle, circle, diamond, arrow, line, free-draw, eraser...
-- ➡️&nbsp;Arrow-binding & labeled arrows.
-- 🔙&nbsp;Undo / Redo.
-- 🔍&nbsp;Zoom and panning support.
+- a local Node server
+- cookie-based password authentication
+- SQLite-backed board storage
+- board list / create / rename / delete / restore
+- a manual `Save board` action
+- Docker deployment with `/app/data` volume persistence
 
-## Excalidraw.com
+## Board Model
 
-The app hosted at [excalidraw.com](https://excalidraw.com) is a minimal showcase of what you can build with Excalidraw. Its [source code](https://github.com/excalidraw/excalidraw/tree/master/excalidraw-app) is part of this repository as well, and the app features:
+Each board persists the following shape on the server:
 
-- 📡&nbsp;PWA support (works offline).
-- 🤼&nbsp;Real-time collaboration.
-- 🔒&nbsp;End-to-end encryption.
-- 💾&nbsp;Local-first support (autosaves to the browser).
-- 🔗&nbsp;Shareable links (export to a readonly link you can share with others).
-
-We'll be adding these features as drop-in plugins for the npm package in the future.
-
-## Quick start
-
-**Note:** following instructions are for installing the Excalidraw [npm package](https://www.npmjs.com/package/@excalidraw/excalidraw) when integrating Excalidraw into your own app. To run the repository locally for development, please refer to our [Development Guide](https://docs.excalidraw.com/docs/introduction/development).
-
-Use `npm` or `yarn` to install the package.
-
-```bash
-npm install react react-dom @excalidraw/excalidraw
-# or
-yarn add react react-dom @excalidraw/excalidraw
+```json
+{
+  "id": "uuid",
+  "name": "Board name",
+  "elements": [],
+  "appState": {},
+  "files": {},
+  "libraryItems": [],
+  "createdAt": "2026-06-26T11:35:17.402Z",
+  "updatedAt": "2026-06-26T11:35:17.402Z"
+}
 ```
 
-Check out our [documentation](https://docs.excalidraw.com/docs/@excalidraw/excalidraw/installation) for more details!
+Soft delete is supported through `deletedAt`.
 
-## Contributing
+## Environment Variables
 
-- Missing something or found a bug? [Report here](https://github.com/excalidraw/excalidraw/issues).
-- Want to contribute? Check out our [contribution guide](https://docs.excalidraw.com/docs/introduction/contributing) or let us know on [Discord](https://discord.gg/UexuTaE).
-- Want to help with translations? See the [translation guide](https://docs.excalidraw.com/docs/introduction/contributing#translating).
+Copy `.env.example` and adjust values as needed.
 
-## Integrations
+| Variable | Required | Default | Notes |
+| --- | --- | --- | --- |
+| `AUTH_PASSWORD` | Yes | none | Login password for the private deployment |
+| `SESSION_SECRET` | Recommended | falls back to `AUTH_PASSWORD` | Used to sign the session cookie |
+| `DB_PATH` | No | `/app/data/database.sqlite` | SQLite file path |
+| `PORT` | No | `3000` | HTTP port |
+| `HOST` | No | `0.0.0.0` | Bind address |
+| `COOKIE_SECURE` | No | `false` | Set to `true` when serving over HTTPS |
+| `BODY_LIMIT` | No | `50mb` | API JSON body limit for large boards / embedded files |
 
-- [VScode extension](https://marketplace.visualstudio.com/items?itemName=pomdtr.excalidraw-editor)
-- [npm package](https://www.npmjs.com/package/@excalidraw/excalidraw)
+## Docker
 
-## Who's integrating Excalidraw
+Build and run:
 
-[Google Cloud](https://googlecloudcheatsheet.withgoogle.com/architecture) • [Meta](https://meta.com/) • [CodeSandbox](https://codesandbox.io/) • [Obsidian Excalidraw](https://github.com/zsviczian/obsidian-excalidraw-plugin) • [Replit](https://replit.com/) • [Slite](https://slite.com/) • [Notion](https://notion.so/) • [HackerRank](https://www.hackerrank.com/) • and many others
+```bash
+docker compose up -d --build
+```
 
-## Sponsors & support
+Important:
 
-If you like the project, you can become a sponsor at [Open Collective](https://opencollective.com/excalidraw) or use [Excalidraw+](https://plus.excalidraw.com/).
+- map `/app/data` to the host
+- keep `DB_PATH=/app/data/database.sqlite`
+- set a strong `AUTH_PASSWORD`
+- set a separate `SESSION_SECRET`
 
-## Thank you for supporting Excalidraw
+The included `docker-compose.yml` already mounts:
 
-[<img src="https://opencollective.com/excalidraw/tiers/sponsors/0/avatar.svg?avatarHeight=120"/>](https://opencollective.com/excalidraw/tiers/sponsors/0/website) [<img src="https://opencollective.com/excalidraw/tiers/sponsors/1/avatar.svg?avatarHeight=120"/>](https://opencollective.com/excalidraw/tiers/sponsors/1/website) [<img src="https://opencollective.com/excalidraw/tiers/sponsors/2/avatar.svg?avatarHeight=120"/>](https://opencollective.com/excalidraw/tiers/sponsors/2/website) [<img src="https://opencollective.com/excalidraw/tiers/sponsors/3/avatar.svg?avatarHeight=120"/>](https://opencollective.com/excalidraw/tiers/sponsors/3/website) [<img src="https://opencollective.com/excalidraw/tiers/sponsors/4/avatar.svg?avatarHeight=120"/>](https://opencollective.com/excalidraw/tiers/sponsors/4/website) [<img src="https://opencollective.com/excalidraw/tiers/sponsors/5/avatar.svg?avatarHeight=120"/>](https://opencollective.com/excalidraw/tiers/sponsors/5/website) [<img src="https://opencollective.com/excalidraw/tiers/sponsors/6/avatar.svg?avatarHeight=120"/>](https://opencollective.com/excalidraw/tiers/sponsors/6/website) [<img src="https://opencollective.com/excalidraw/tiers/sponsors/7/avatar.svg?avatarHeight=120"/>](https://opencollective.com/excalidraw/tiers/sponsors/7/website) [<img src="https://opencollective.com/excalidraw/tiers/sponsors/8/avatar.svg?avatarHeight=120"/>](https://opencollective.com/excalidraw/tiers/sponsors/8/website) [<img src="https://opencollective.com/excalidraw/tiers/sponsors/9/avatar.svg?avatarHeight=120"/>](https://opencollective.com/excalidraw/tiers/sponsors/9/website) [<img src="https://opencollective.com/excalidraw/tiers/sponsors/10/avatar.svg?avatarHeight=120"/>](https://opencollective.com/excalidraw/tiers/sponsors/10/website)
+```text
+./data:/app/data
+```
 
-<a href="https://opencollective.com/excalidraw#category-CONTRIBUTE" target="_blank"><img src="https://opencollective.com/excalidraw/tiers/backers.svg?avatarHeight=32"/></a>
+That means deleting or recreating the container will not remove your boards as long as the host `./data` folder remains.
 
-Last but not least, we're thankful to these companies for offering their services for free:
+## Publish To GitHub Container Registry
 
-[![Vercel](./.github/assets/vercel.svg)](https://vercel.com) [![Sentry](./.github/assets/sentry.svg)](https://sentry.io) [![Crowdin](./.github/assets/crowdin.svg)](https://crowdin.com)
+This repository includes GitHub Actions workflows for container build and publish.
+
+- pushes to `main` or `master` publish `ghcr.io/<owner>/<repo>:latest`
+- pushes to `codex/**` publish branch-tagged preview images
+- version tags like `v1.0.0` publish matching tag images
+- manual publish is available through `workflow_dispatch`
+
+To use it:
+
+1. Push this codebase to your own GitHub repository.
+2. Open the repository `Actions` tab and allow workflows if GitHub asks.
+3. Push to the default branch, or trigger `Publish Container` manually.
+4. Pull the image from GHCR:
+
+```bash
+docker pull ghcr.io/<owner>/<repo>:latest
+```
+
+If the GitHub repository or package is private, log in first:
+
+```bash
+docker login ghcr.io
+```
+
+## Local Development
+
+Install dependencies:
+
+```bash
+pnpm install
+```
+
+Start the API server:
+
+```bash
+AUTH_PASSWORD=change-me SESSION_SECRET=change-me pnpm dev:server
+```
+
+Start the Vite frontend:
+
+```bash
+pnpm dev
+```
+
+The frontend proxies `/api` to `http://localhost:3001`.
+
+## Production Start
+
+Build the frontend:
+
+```bash
+pnpm build
+```
+
+Run the server:
+
+```bash
+AUTH_PASSWORD=change-me SESSION_SECRET=change-me pnpm start
+```
+
+## Notes
+
+- `Ctrl/Cmd+S` saves the active board to SQLite.
+- Import/export `.excalidraw` files still uses the official Excalidraw editor actions.
+- The app intentionally removes cloud redirects, analytics, and external persistence hooks from the official web wrapper.

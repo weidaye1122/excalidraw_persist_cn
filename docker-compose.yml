@@ -1,25 +1,18 @@
-version: "3.8"
-
 services:
-  excalidraw:
+  excalidraw-selfhost:
     build:
       context: .
-      args:
-        - NODE_ENV=development
-    container_name: excalidraw
+      dockerfile: Dockerfile
+    container_name: excalidraw-selfhost
     ports:
-      - "3000:80"
-    restart: on-failure
-    stdin_open: true
-    healthcheck:
-      disable: true
+      - "3000:3000"
     environment:
-      - NODE_ENV=development
+      AUTH_PASSWORD: change-this-password
+      SESSION_SECRET: change-this-session-secret
+      DB_PATH: /app/data/database.sqlite
+      PORT: 3000
+      HOST: 0.0.0.0
+      COOKIE_SECURE: "false"
     volumes:
-      - ./:/opt/node_app/app:delegated
-      - ./package.json:/opt/node_app/package.json
-      - ./yarn.lock:/opt/node_app/yarn.lock
-      - notused:/opt/node_app/app/node_modules
-
-volumes:
-  notused:
+      - ./data:/app/data
+    restart: unless-stopped
