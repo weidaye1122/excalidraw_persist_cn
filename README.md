@@ -22,7 +22,7 @@
 镜像地址：
 
 ```text
-ghcr.io/weidaye1122/excalidraw-persist:latest
+ghcr.io/weidaye1122/excalidraw-persist_cn:latest
 ```
 
 `docker-compose.yml` 示例：
@@ -32,8 +32,8 @@ version: "3.8"
 
 services:
   excalidraw-persist:
-    image: ghcr.io/weidaye1122/excalidraw-persist:latest
-    container_name: ExcalidrawPersist
+    container_name: weidaye1122_excalidraw-persist_cn
+    image: ghcr.io/weidaye1122/excalidraw-persist_cn:latest
     restart: always
     ports:
       - "8180:80"

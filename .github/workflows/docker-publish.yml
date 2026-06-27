@@ -43,8 +43,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/excalidraw-persist:latest
-            ghcr.io/${{ github.repository_owner }}/excalidraw-persist:${{ steps.package_version.outputs.version }}
+            ghcr.io/${{ github.repository_owner }}/excalidraw-persist_cn:latest
+            ghcr.io/${{ github.repository_owner }}/excalidraw-persist_cn:${{ steps.package_version.outputs.version }}
           platforms: linux/amd64,linux/arm64
           file: Dockerfile
 
